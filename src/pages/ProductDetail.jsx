@@ -4,6 +4,8 @@ import axios from 'axios'
 import { ChevronLeft, ChevronRight, FileText, Minus, Phone, Plus, RotateCcw, ShoppingBag } from 'lucide-react'
 import { API, formatPrice } from '../lib/utils'
 import { useCart } from '../hooks/useCart'
+import ProductImage from '../components/ProductImage'
+import ProductVisitTracker from '../components/ProductVisitTracker'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -33,10 +35,10 @@ export default function ProductDetail() {
   const quotePath = `/contact?product=${encodeURIComponent(product.name)}`
   const minimumQuantity = product.minimum_order_quantity || 1
   const specifications = [
-    ['Product category', product.category_name || 'Hotel supplies'],
+    ['Product category', product.category_name || 'Everyday essentials'],
     ['Pack size', product.unit || 'Standard pack'],
     ['Customization available', 'Yes'],
-    ['Usage / application', product.category_name === 'Hotel Amenities' ? 'For hotel guests' : 'For hotels and facilities'],
+    ['Usage / application', 'For everyday use'],
     ['Availability', product.stock > 0 ? 'In stock' : 'On enquiry'],
     ['Country of origin', 'Made in India'],
   ]
@@ -49,21 +51,22 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-white">
+      <ProductVisitTracker key={product.id} product={product} />
       <main className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 lg:py-7">
-        <div className="flex items-start gap-6 border-t border-slate-200 pt-5 sm:gap-8 lg:gap-14">
-          <section className="w-5/12 shrink-0 lg:w-[420px]">
-            <div className="relative overflow-hidden bg-slate-950">
-              <img src={currentImage} alt={product.name} className="aspect-[4/5] w-full object-contain" />
+        <div className="flex flex-col items-start gap-6 border-t border-slate-200 pt-5 md:flex-row sm:gap-8 lg:gap-14">
+          <section className="w-full shrink-0 md:w-5/12 lg:w-[420px]">
+            <div className="relative overflow-hidden rounded-2xl bg-brand-50">
+              <ProductImage key={currentImage} src={currentImage} alt={product.name} loading="eager" className="product-detail-image" imageClassName="aspect-[4/5] w-full object-contain" />
               <Link to={quotePath} className="absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-8 py-3 text-sm font-bold text-brand-700 shadow-xl hover:bg-brand-50">Get Best Quote</Link>
               {images.length > 1 && <><button onClick={() => moveImage(-1)} className="absolute left-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-slate-900 shadow hover:bg-white" aria-label="Previous product image"><ChevronLeft size={24} /></button><button onClick={() => moveImage(1)} className="absolute right-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-slate-900 shadow hover:bg-white" aria-label="Next product image"><ChevronRight size={24} /></button></>}
             </div>
             {images.length > 1 && <div className="mt-4 flex gap-3 overflow-x-auto pb-1">{images.map((image, index) => <button key={image} onClick={() => setActiveImage(index)} className={`h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white ${activeImage === index ? 'border-brand-700' : 'border-slate-200 hover:border-brand-300'}`} aria-label={`View product image ${index + 1}`}><img src={image} alt="" className="h-full w-full object-cover" /></button>)}</div>}
           </section>
 
-          <section className="min-w-0 flex-1 max-w-2xl">
+          <section className="w-full min-w-0 flex-1 max-w-2xl">
             <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
               <h1 className="font-display text-2xl font-bold leading-tight text-slate-950 sm:text-3xl">{product.name}</h1>
-              <a href="tel:+919876543210" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full border border-brand-600 bg-white px-4 py-2 text-sm font-bold text-brand-700 hover:bg-brand-50"><Phone size={16} />Request Callback</a>
+              <a href="tel:+917228041690" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full border border-brand-600 bg-white px-4 py-2 text-sm font-bold text-brand-700 hover:bg-brand-50"><Phone size={16} />Request Callback</a>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2"><span className="text-3xl font-medium text-slate-950">{formatPrice(product.price)}</span><span className="text-sm text-slate-600">/ {product.unit || 'piece'}</span><Link to={quotePath} className="text-lg font-semibold text-brand-700 underline underline-offset-2">Get Latest Price</Link></div>
             <a href={quotePath} className="mt-3 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-brand-700"><FileText size={17} className="text-rose-500" />Product Brochure</a>
@@ -79,8 +82,8 @@ export default function ProductDetail() {
             </div>
             <p className="mt-2 text-xs font-medium text-brand-800">Order quantity must be {minimumQuantity} {product.unit || 'units'} or more.</p>
             <h2 className="mt-4 text-lg font-semibold text-slate-900">{product.name}</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-600">{product.description || 'Quality hotel and hospitality supply product available for regular and bulk requirements. Contact Bittrif Group of Company for pricing and customization details.'}</p>
-            <p className="mt-2 text-sm leading-6 text-slate-600">Bittrif Group of Company supplies dependable hotel amenities and cleaning essentials for hotels, resorts, spas, and facility teams.</p>
+            <p className="mt-1 text-sm leading-6 text-slate-600">{product.description || 'A useful everyday essential, selected for its practical design and easy place in your routine.'}</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">Nivora Mart brings together thoughtful finds for home, travel, gifting, and everyday living.</p>
 
             <Link to={quotePath} className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-brand-700 px-6 py-4 text-base font-bold text-white hover:bg-brand-800"><Phone size={19} />Yes! I am interested</Link>
             <Link to="/products" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand-700 hover:text-brand-900"><RotateCcw size={15} />Back to all products</Link>

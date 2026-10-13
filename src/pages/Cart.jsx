@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
   BadgeCheck,
@@ -15,6 +16,7 @@ import { useCart } from '../hooks/useCart'
 import { formatPrice } from '../lib/utils'
 
 export default function Cart() {
+  const reducedMotion = useReducedMotion()
   const { cart, removeFromCart, updateQty, totalPrice } = useCart()
   const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0)
   const shipping = 0
@@ -30,8 +32,8 @@ export default function Cart() {
           </div>
           <h1 className="mt-8 font-display text-4xl font-bold tracking-tight text-slate-950">Your cart is empty</h1>
           <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-slate-600">
-            Start building your Bittrif order with cleaning supplies, amenities, and other business-ready products.
-            Once items are in the cart, the new checkout can capture company and delivery details too.
+            Discover useful finds for home, travel, gifting, and the little routines that make a day feel better.
+            Add your favourites, then check out securely when you are ready.
           </p>
           <Link to="/products" className="btn-primary mt-8 gap-2">
             Browse catalog
@@ -50,11 +52,10 @@ export default function Cart() {
             <div>
               <p className="section-kicker">Cart review</p>
               <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-slate-950 md:text-5xl">
-                Review your Bittrif order before checkout.
+            Review your Nivora order before checkout.
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">
-                Confirm quantity, keep an eye on commercial pricing, and move ahead with delivery preferences and GST
-                details in the next step.
+                Confirm your items, adjust quantities, and continue to secure delivery and payment details in the next step.
               </p>
             </div>
             <div className="surface-panel p-6">
@@ -98,8 +99,8 @@ export default function Cart() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[1.25fr_0.75fr]">
           <div className="space-y-4">
-            {cart.map((item) => (
-              <div key={item.id} className="surface-panel p-5">
+            <AnimatePresence initial={false}>{cart.map((item) => (
+              <motion.div layout={!reducedMotion} key={item.id} exit={{ opacity: 0, x: reducedMotion ? 0 : -20 }} transition={{ duration: .2 }} className="surface-panel p-5">
                 <div className="grid gap-5 md:grid-cols-[112px_1fr_auto] md:items-center">
                   <Link to={`/product/${item.id}`} className="overflow-hidden rounded-3xl bg-slate-100">
                     <img src={item.image} alt={item.name} className="h-28 w-full object-cover transition-transform duration-300 hover:scale-105" />
@@ -130,9 +131,9 @@ export default function Cart() {
                       >
                         <Minus size={15} />
                       </button>
-                      <span className="min-w-[3rem] border-x border-slate-200 px-4 py-3 text-center text-sm font-bold text-slate-900">
+                      <motion.span key={item.quantity} initial={{ opacity: .4 }} animate={{ opacity: 1 }} className="min-w-[3rem] border-x border-slate-200 px-4 py-3 text-center text-sm font-bold text-slate-900" aria-live="polite">
                         {item.quantity}
-                      </span>
+                      </motion.span>
                       <button
                         onClick={() => updateQty(item.id, item.quantity + 1)}
                         className="px-3 py-3 text-slate-600 hover:bg-slate-50"
@@ -156,8 +157,8 @@ export default function Cart() {
                     </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              </motion.div>
+            ))}</AnimatePresence>
           </div>
 
           <div className="space-y-5">
